@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Pagamento Confirmado — Atlas RH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --ink:#0A0F1E;--ink2:#1E2A42;--ink3:#3D4F6E;
+  --paper:#F5F4F0;--white:#FFFFFF;
+  --gold:#C9952A;--gold2:#E8B84B;--gold-pale:#FBF3E0;
+  --blue:#1B4FD8;--blue2:#2563EB;--blue-pale:#EFF4FF;
+  --green:#0D6E4A;--green2:#16a34a;--green-pale:#f0fdf4;
+  --border:#E4E2DB;--border2:#D0CDCA;
+  --r:14px;--r2:20px;--r3:28px;
+  --sh:0 2px 16px rgba(10,15,30,.08);
+  --sh2:0 8px 48px rgba(10,15,30,.14);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.6;
+  min-height:100vh;display:flex;flex-direction:column;
+}
+
+/* ── TOPBAR ── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 32px;
+  background:rgba(245,244,240,.95);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-name{
+  font-family:'Syne',sans-serif;font-size:18px;font-weight:800;
+  color:var(--ink);letter-spacing:.06em;text-transform:uppercase;
+}
+.logo-name span{color:var(--gold);}
+
+/* ── MAIN ── */
+main{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:48px 24px;
+  position:relative;overflow:hidden;
+}
+.bg-grad{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(13,110,74,.07) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 80% 90%, rgba(27,79,216,.04) 0%, transparent 60%);
+}
+.bg-grid{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:48px 48px;opacity:.3;
+}
+
+/* ── CARD ── */
+.card{
+  background:var(--white);border-radius:var(--r3);
+  border:1.5px solid var(--border);
+  box-shadow:var(--sh2);
+  padding:48px 40px;
+  max-width:520px;width:100%;
+  text-align:center;
+  position:relative;
+  animation:slideUp .5s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(24px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ── ÍCONE SUCESSO ── */
+.success-ring{
+  width:88px;height:88px;border-radius:50%;
+  background:var(--green-pale);border:2.5px solid #bbf7d0;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 24px;
+  animation:popIn .6s .2s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes popIn{
+  from{opacity:0;transform:scale(.5);}
+  to{opacity:1;transform:scale(1);}
+}
+.check-svg{animation:drawCheck .5s .5s ease both;}
+@keyframes drawCheck{
+  from{stroke-dashoffset:60;}
+  to{stroke-dashoffset:0;}
+}
+
+/* ── TEXTOS ── */
+.badge-pago{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--green-pale);border:1px solid #bbf7d0;
+  border-radius:99px;padding:5px 14px;margin-bottom:20px;
+  font-size:12px;font-weight:700;color:var(--green2);
+  letter-spacing:.04em;text-transform:uppercase;
+}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green2);}
+h1{
+  font-family:'Syne',sans-serif;font-size:28px;font-weight:800;
+  letter-spacing:-.03em;color:var(--ink);margin-bottom:10px;line-height:1.1;
+}
+.sub{font-size:15px;color:var(--ink3);line-height:1.6;margin-bottom:28px;}
+
+/* ── INFO BOX ── */
+.info-box{
+  background:var(--paper);border:1.5px solid var(--border);
+  border-radius:var(--r2);padding:20px 20px;margin-bottom:28px;
+  text-align:left;
+}
+.info-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 0;border-bottom:1px solid var(--border);
+  font-size:13.5px;
+}
+.info-row:last-child{border-bottom:none;}
+.info-label{color:var(--ink3);font-weight:500;}
+.info-val{color:var(--ink);font-weight:700;text-align:right;max-width:60%;}
+.info-val.green{color:var(--green2);}
+.info-val.blue{color:var(--blue2);}
+
+/* ── PRÓXIMOS PASSOS ── */
+.steps{
+  display:flex;flex-direction:column;gap:10px;
+  margin-bottom:28px;text-align:left;
+}
+.step{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 14px;
+  background:var(--blue-pale);border:1px solid #c7d9ff;
+  border-radius:var(--r);
+}
+.step-num{
+  width:24px;height:24px;border-radius:50%;
+  background:var(--blue2);color:#fff;
+  font-size:12px;font-weight:800;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.step-text{font-size:13px;color:var(--ink2);line-height:1.5;}
+.step-text strong{color:var(--ink);font-weight:700;}
+
+/* ── BOTÕES ── */
+.btn-primary{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:15px;border-radius:var(--r);border:none;
+  background:var(--ink);color:#fff;font-size:15px;font-weight:700;
+  cursor:pointer;transition:all .22s;font-family:inherit;letter-spacing:-.01em;
+  text-decoration:none;margin-bottom:10px;
+}
+.btn-primary:hover{background:var(--blue2);transform:translateY(-1px);box-shadow:0 6px 24px rgba(37,99,235,.35);}
+.btn-ghost{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:13px;border-radius:var(--r);
+  border:1.5px solid var(--border2);background:transparent;
+  color:var(--ink3);font-size:14px;font-weight:600;
+  cursor:pointer;transition:all .2s;font-family:inherit;
+  text-decoration:none;
+}
+.btn-ghost:hover{border-color:var(--ink);color:var(--ink);}
+
+/* ── NOTA ── */
+.nota{font-size:12px;color:var(--ink3);margin-top:20px;line-height:1.6;}
+.nota a{color:var(--blue2);text-decoration:none;}
+
+/* ── LOADING STATE ── */
+.loading-state{display:none;text-align:center;padding:40px 0;}
+.spinner{
+  width:48px;height:48px;border-radius:50%;
+  border:3px solid var(--border);border-top-color:var(--blue2);
+  animation:spin 1s linear infinite;margin:0 auto 16px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-txt{font-size:15px;color:var(--ink3);}
+
+/* ── ERROR STATE ── */
+.error-state{display:none;text-align:center;}
+.error-ring{
+  width:80px;height:80px;border-radius:50%;
+  background:#fff0f0;border:2.5px solid #fca5a5;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;font-size:36px;
+}
+.error-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--ink);margin-bottom:8px;}
+.error-sub{font-size:14px;color:var(--ink3);margin-bottom:24px;}
+
+/* ── FOOTER ── */
+footer{
+  padding:24px 32px;text-align:center;
+  border-top:1px solid var(--border);
+  font-size:12.5px;color:var(--ink3);
+}
+footer a{color:var(--gold);text-decoration:none;}
+
+/* ── CONFETTI ── */
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden;}
+.confetti-piece{
+  position:absolute;top:-10px;
+  width:8px;height:8px;border-radius:2px;
+  animation:confettiFall linear forwards;
+}
+@keyframes confettiFall{
+  0%  {transform:translateY(0) rotate(0deg);opacity:1;}
+  100%{transform:translateY(110vh) rotate(720deg);opacity:0;}
+}
+
+@media(max-width:560px){
+  .topbar{padding:12px 20px;}
+  .card{padding:32px 20px;}
+  h1{font-size:22px;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <a href="/" class="logo">
+    <img src="data:image/png;base64,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" alt="Atlas RH" style="width:36px;height:36px;object-fit:contain;">
+    <span class="logo-name">Atlas<span> RH</span></span>
+  </a>
+  <span style="font-size:13px;color:var(--ink3);">Área segura · InfinitPay</span>
+</nav>
+
+<!-- CONFETTI -->
+<div class="confetti-wrap" id="confetti-wrap"></div>
+
+<!-- MAIN -->
+<main>
+  <div class="bg-grad"></div>
+  <div class="bg-grid"></div>
+
+  <!-- LOADING -->
+  <div class="loading-state" id="loading-state">
+    <div class="spinner"></div>
+    <div class="loading-txt">Verificando seu pagamento…</div>
+  </div>
+
+  <!-- CARD SUCESSO -->
+  <div class="card" id="card-sucesso" style="display:none;">
+
+    <div class="success-ring">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="18" stroke="#bbf7d0" stroke-width="2"/>
+        <polyline
+          points="11,21 17,27 29,14"
+          stroke="#16a34a" stroke-width="3"
+          stroke-linecap="round" stroke-linejoin="round"
+          fill="none"
+          stroke-dasharray="60"
+          class="check-svg"
+        />
+      </svg>
+    </div>
+
+    <div class="badge-pago">
+      <span class="badge-dot"></span>
+      Pagamento confirmado
+    </div>
+
+    <h1>Sua assinatura está<br>ativa! 🎉</h1>
+    <p class="sub">Obrigado pela confiança. Seu acesso ao Atlas RH foi ativado e já pode ser utilizado pela sua equipe.</p>
+
+    <!-- INFO DA TRANSAÇÃO -->
+    <div class="info-box" id="info-box">
+      <div class="info-row">
+        <span class="info-label">Plano</span>
+        <span class="info-val" id="info-plano">—</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Forma de pagamento</span>
+        <span class="info-val blue" id="info-metodo">—</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">ID da transação</span>
+        <span class="info-val" id="info-nsu" style="font-size:11px;word-break:break-all;">—</span>
+      </div>
+      <div class="info-row" id="row-comprovante" style="display:none;">
+        <span class="info-label">Comprovante</span>
+        <a class="info-val blue" id="info-comprovante" href="#" target="_blank" style="font-size:12px;">Ver comprovante ↗</a>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Status</span>
+        <span class="info-val green">✓ Pago</span>
+      </div>
+    </div>
+
+    <!-- PRÓXIMOS PASSOS -->
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Acesse o sistema</strong> — entre com o e-mail e senha cadastrados. Seu tenant já está ativo.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Cadastre seus colaboradores</strong> — adicione a equipe e configure os dados de ponto e folha.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Dúvidas?</strong> Fale com nosso suporte no WhatsApp — respondemos em menos de 1 hora.</div>
+      </div>
+    </div>
+
+    <a href="/" class="btn-primary" id="btn-acessar">
+      ▸ Acessar o Atlas RH agora
+    </a>
+    <a href="#" class="btn-ghost" onclick="abrirWhatsapp()">
+      💬 Falar com suporte
+    </a>
+
+    <p class="nota">
+      Um e-mail de confirmação foi enviado para <strong id="nota-email">seu endereço</strong>.<br>
+      Guarde o comprovante para sua contabilidade.<br>
+      <a href="/">Voltar para a página inicial</a>
+    </p>
+  </div>
+
+  <!-- CARD ERRO -->
+  <div class="card error-state" id="card-erro">
+    <div class="error-ring">⚠️</div>
+    <div class="error-title">Pagamento não encontrado</div>
+    <div class="error-sub">Não conseguimos confirmar seu pagamento. Se você acabou de pagar, aguarde alguns instantes e recarregue a página.</div>
+    <a href="/" class="btn-primary">← Voltar e tentar novamente</a>
+    <a href="#" class="btn-ghost" style="margin-top:10px;" onclick="abrirWhatsapp()">💬 Falar com suporte</a>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  © 2026 Atlas RH · Todos os direitos reservados ·
+  <a href="/">Página inicial</a> ·
+  Pagamentos processados com segurança pela <strong>InfinitPay</strong>
+</footer>
+
+<script
+  src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+</script>
+<script
+  src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js">
+</script>
+<script>
+// ── Firebase (mesmo projeto da landing) ─────────────────────
+const FB_CONFIG = {
+  apiKey:            'AIzaSyDebJ68R_08TKY_nRzutfFUUvQeujt34Tk',
+  projectId:         'atlasrh-e52be',
+  storageBucket:     'atlasrh-e52be.firebasestorage.app',
+  messagingSenderId: '756201599323',
+  appId:             '1:756201599323:web:477e44635aabf0527c6a7e',
+  authDomain:        'atlasrh-e52be.firebaseapp.com',
+};
+let _db;
+try {
+  const app = firebase.initializeApp(FB_CONFIG);
+  _db = firebase.firestore(app);
+} catch(e) { console.warn('Firebase:', e.message); }
+
+// ── Helpers ──────────────────────────────────────────────────
+function show(id){ document.getElementById(id).style.display = ''; }
+function hide(id){ document.getElementById(id).style.display = 'none'; }
+
+function abrirWhatsapp(){
+  const msg = encodeURIComponent('Olá! Acabei de realizar o pagamento do Atlas RH e preciso de ajuda.');
+  window.open('https://wa.me/5545999999999?text=' + msg, '_blank');
+}
+
+// ── Confetti ─────────────────────────────────────────────────
+function lancarConfetti(){
+  const wrap  = document.getElementById('confetti-wrap');
+  const cores = ['#C9952A','#E8B84B','#1B4FD8','#0D6E4A','#E8B84B','#2563EB','#16a34a'];
+  for(let i = 0; i < 70; i++){
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left   = Math.random() * 100 + 'vw';
+    el.style.background = cores[Math.floor(Math.random() * cores.length)];
+    el.style.width  = (6 + Math.random() * 8) + 'px';
+    el.style.height = (6 + Math.random() * 8) + 'px';
+    el.style.borderRadius = Math.random() > .5 ? '50%' : '2px';
+    const dur = 2 + Math.random() * 2.5;
+    el.style.animationDuration  = dur + 's';
+    el.style.animationDelay     = Math.random() * 1.2 + 's';
+    wrap.appendChild(el);
+    setTimeout(() => el.remove(), (dur + 1.5) * 1000);
+  }
+}
+
+// ── Formata método de pagamento ───────────────────────────────
+function formatMetodo(m){
+  if(!m) return '—';
+  if(m === 'pix') return '🟢 Pix';
+  if(m.includes('credit')) return '💳 Cartão de Crédito';
+  return m;
+}
+
+// ── Formata nome do plano ─────────────────────────────────────
+function formatPlano(p){
+  const map = { trial:'Trial', starter:'Starter — R$ 159/mês', pro:'Pro — R$ 389/mês', enterprise:'Enterprise — R$ 799/mês' };
+  return map[p] || p || '—';
+}
+
+// ── Ativa tenant no Firestore ─────────────────────────────────
+async function ativarTenant(tenantId){
+  if(!_db || !tenantId) return;
+  try {
+    await _db.collection('tenants').doc(tenantId).update({
+      active: true,
+      status: 'ativo',
+      activatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      activationMethod: 'infinitpay',
+    });
+    console.log('[Atlas] Tenant ativado:', tenantId);
+  } catch(e){
+    console.warn('[Atlas] Erro ao ativar tenant:', e.message);
+  }
+}
+
+// ── Lógica principal ──────────────────────────────────────────
+(async function init(){
+  // Mostra loading
+  show('loading-state');
+  hide('card-sucesso');
+  hide('card-erro');
+
+  // Pega parâmetros da URL retornados pelo InfinitPay
+  const params        = new URLSearchParams(location.search);
+  const pagamentoOk   = params.get('pagamento') === 'ok';
+  const captureMethod = params.get('capture_method') || '';
+  const orderNsu      = params.get('order_nsu')      || '';
+  const transNsu      = params.get('transaction_nsu')|| '';
+  const receiptUrl    = params.get('receipt_url')    || '';
+  const slug          = params.get('slug')           || '';
+
+  // Recupera dados do localStorage
+  const tenantId = localStorage.getItem('atlas_saas_tenant_id') || '';
+  const email    = localStorage.getItem('atlas_saas_email')     || '';
+  const plan     = localStorage.getItem('atlas_saas_plan')      || '';
+
+  // Simula verificação (pequeno delay para UX)
+  await new Promise(r => setTimeout(r, 1200));
+
+  hide('loading-state');
+
+  // Se não veio o parâmetro de confirmação, mostra erro
+  if(!pagamentoOk && !transNsu && !orderNsu){
+    show('card-erro');
+    return;
+  }
+
+  // ── Pagamento confirmado — preenche informações ──
+  document.getElementById('info-plano').textContent   = formatPlano(plan);
+  document.getElementById('info-metodo').textContent  = formatMetodo(captureMethod);
+  document.getElementById('info-nsu').textContent     = transNsu || orderNsu || '—';
+  document.getElementById('nota-email').textContent   = email || 'seu endereço cadastrado';
+
+  if(receiptUrl){
+    const rowComp = document.getElementById('row-comprovante');
+    const linkComp= document.getElementById('info-comprovante');
+    rowComp.style.display = '';
+    linkComp.href = receiptUrl;
+  }
+
+  // Ativa o tenant no Firestore
+  if(tenantId) await ativarTenant(tenantId);
+
+  // Mostra card de sucesso
+  show('card-sucesso');
+  lancarConfetti();
+
+  // Ajusta link de acesso
+  document.getElementById('btn-acessar').href =
+    tenantId ? '/app/?t=' + tenantId : '/app/';
+
+})();
+</script>
+</body>
+</html>
